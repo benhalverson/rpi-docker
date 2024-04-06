@@ -4,18 +4,19 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx_website
-    ports:
-      - "80:80"
     volumes:
       - ./website:/usr/share/nginx/html:ro
-      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
     restart: unless-stopped
 
   dnsmasq:
-    image: jpillora/dnsmasq
+    build:
+      context: ./dnsmasq
+      dockerfile: Dockerfile
     container_name: dnsmasq_service
     volumes:
-      - ./config/dnsmasq.conf:/etc/dnsmasq.conf
+      - ./dnsmasq.conf:/etc/dnsmasq.conf
     cap_add:
       - NET_ADMIN
     network_mode: "host"
@@ -23,8 +24,8 @@ services:
 
   hostapd:
     build:
-      context: .
-      dockerfile: ../hostapd/Dockerfile
+      context: ./hostapd
+      dockerfile: Dockerfile
     container_name: hostapd_service
     volumes:
       - ./config/hostapd.conf:/etc/hostapd/hostapd.conf
