@@ -10,13 +10,31 @@ services:
       - "80:80"
     restart: unless-stopped
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_service
+    ports:
+      - "11434:11434"
+    # cap_add:
+      # - NET_ADMIN
+    # network_mode: "host"
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+         devices:
+          - driver: "nvidia"
+            count: all 
+            capabilities: [gpu]
+
+
   dnsmasq:
     build:
       context: ./dnsmasq
       dockerfile: Dockerfile
     container_name: dnsmasq_service
     volumes:
-      - ./dnsmasq.conf:/etc/dnsmasq.conf
+      - ./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
     cap_add:
       - NET_ADMIN
     network_mode: "host"
@@ -28,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: hostapd_service
     volumes:
-      - ./config/hostapd.conf:/etc/hostapd/hostapd.conf
+      - ./hostapd/hostapd.conf:/etc/hostapd/hostapd.conf
     cap_add:
       - NET_ADMIN
     network_mode: "host"

@@ -1,4 +1,3 @@
 FROM alpine:latest
-RUN apk add --no-cache dnsmasq
-COPY dnsmasq.conf /etc/dnsmasq.conf
+RUN apk update && apk add --no-cache dnsmasq
 ENTRYPOINT ["dnsmasq", "-k"]
